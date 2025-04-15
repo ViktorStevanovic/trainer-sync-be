@@ -1,0 +1,40 @@
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                driver: pdo_mysql
+                url: "mysql://%env(resolve:DATABASE_USER)%:%env(resolve:DATABASE_PASSWORD)%@%env(resolve:DATABASE_HOST)%:%env(resolve:DATABASE_PORT)%/%env(resolve:DATABASE_SCHEMA)%?serverVersion=%env(resolve:DATABASE_VERSION)%"
+                server_version: "%env(resolve:DATABASE_VERSION)%"
+                charset: utf8mb4
+
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        enable_lazy_ghost_objects: true
+        report_fields_where_declared: true
+        controller_resolver:
+            auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: attribute
+                dir: "%kernel.project_dir%/src/Entity"
+                prefix: 'App\Entity'
+                alias: App
+        dql:
+            string_functions:
+                TIME: DoctrineExtensions\Query\Mysql\Time
+                DATEADD: DoctrineExtensions\Query\Mysql\DateAdd
+                DATE: DoctrineExtensions\Query\Mysql\Date
+                ROUND: DoctrineExtensions\Query\Mysql\Round
+                NOW: DoctrineExtensions\Query\Mysql\Now
+                GROUP_CONCAT: DoctrineExtensions\Query\Mysql\GroupConcat
+                IF: DoctrineExtensions\Query\Mysql\IfElse
+                CURDATE: App\Services\Utils\DoctrineExtensions\CurrentDateFunctionNode
+                DATEFORMAT: DoctrineExtensions\Query\Mysql\DateFormat
+                TIME_FORMAT: App\Services\Utils\DoctrineExtensions\TimeFormatFunctionNode
+                RAND: DoctrineExtensions\Query\Mysql\Rand
+                TRANSLATETOITALIAN: App\Services\Utils\DoctrineExtensions\ItalianConstantConverterFunctionNode
+
