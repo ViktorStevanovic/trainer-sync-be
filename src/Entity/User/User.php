@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Trainer\Trainer;
 use App\Entity\UserType\UserType;
 use App\Repository\UserRepository;
 use DateTime;
@@ -16,6 +17,8 @@ use JMS\Serializer\Annotation as Serializer;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ORM\Table('users')]
+#[ORM\Index(name: 'idx_email', fields: ['email'])]
+#[ORM\Index(name: 'idx_phone', fields: ['phone'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -34,6 +37,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::STRING, length: 180, nullable: false)]
     #[Serializer\Groups(['minimalUser', 'simpleUser', 'user'])]
     private ?string $email = null;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Serializer\Groups(['minimalUser', 'simpleUser', 'user'])]
+    private ?string $phone = null;
 
     #[ORM\Column(type: Types::STRING, options: ['default' => 'tmp-password'])]
     private ?string $password = 'tmp-password';
@@ -80,7 +87,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Serializer\Groups(['simpleUser', 'user'])]
     private ?DateTime $createdAt = null;
-
 
     # ===============================
     # ===== Getters & Setters
@@ -321,6 +327,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setResetPasswordRequestedAt(?DateTime $resetPasswordRequestedAt): self
     {
         $this->resetPasswordRequestedAt = $resetPasswordRequestedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of phone
+     */
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Set the value of phone
+     */
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
 
         return $this;
     }
