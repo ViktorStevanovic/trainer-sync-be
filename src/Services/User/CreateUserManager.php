@@ -5,6 +5,7 @@ namespace App\Services\User;
 use App\Entity\User\User;
 use App\Error\ErrorCodeEnum;
 use App\Form\User\UserManageType;
+use App\Services\User\Association\AssociationUserManager;
 use App\Services\Utils\Helper\DoctrineHelper;
 use Exception;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -16,6 +17,7 @@ class CreateUserManager
     public function __construct(
         private FormFactoryInterface $formFactory,
         private DoctrineHelper $doctrineHelper,
+        private AssociationUserManager $associationUserManager,
     ) {}
 
     public function createUser(Request $request): void
@@ -31,7 +33,10 @@ class CreateUserManager
         }
 
         $user->setConfirmationToken(Uuid::v4()->toBase32());
+        $this->doctrineHelper->persist($user);
 
-        $this->doctrineHelper->save($user);
+        $this->associationUserManager->createUserAssociation(user: $user, request: $request);
+
+        $this->doctrineHelper->flush();
     }
 }

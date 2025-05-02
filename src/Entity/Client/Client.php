@@ -36,9 +36,9 @@ class Client
     #[Serializer(['trainer'])]
     private ?int $height = null;
 
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     #[Serializer(['trainer'])]
-    private ?int $weight = null;
+    private ?float $weight = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     #[Serializer(['trainer'])]

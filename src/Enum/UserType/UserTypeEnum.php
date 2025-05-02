@@ -6,7 +6,7 @@ final class UserTypeEnum
 {
     public const string ADMIN = "admin";
 
-    public const string PERSONAL_TRAINER = "personal-trainer";
+    public const string TRAINER = "trainer";
 
     public const string CLIENT = "client";
 
@@ -14,7 +14,7 @@ final class UserTypeEnum
     {
         return [
             self::ADMIN,
-            self::PERSONAL_TRAINER,
+            self::TRAINER,
             self::CLIENT,
         ];
     }
