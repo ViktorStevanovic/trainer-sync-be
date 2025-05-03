@@ -2,9 +2,9 @@
 
 namespace App\Entity\Trainer;
 
+use App\Entity\Appointment\Appointment\Appointment;
 use App\Entity\Client\Client;
 use App\Entity\User\User;
-use App\Repository\UserType\UserTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -35,6 +35,9 @@ class Trainer
     #[Serializer(['client'])]
     private Collection $clients;
 
+    #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'trainer')]
+    private Collection $appointments;
+
     # ===============================
     # ===== Costruttore
     # ===============================
@@ -42,6 +45,7 @@ class Trainer
     public function __construct()
     {
         $this->clients = new ArrayCollection();
+        $this->appointments = new ArrayCollection();
     }
 
     # ===============================
@@ -101,6 +105,36 @@ class Trainer
             // set the owning side to null (unless already changed)
             if ($client->getTrainer() === $this) {
                 $client->setTrainer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): static
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setTrainer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): static
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getTrainer() === $this) {
+                $appointment->setTrainer(null);
             }
         }
 

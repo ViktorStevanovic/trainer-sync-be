@@ -2,8 +2,11 @@
 
 namespace App\Entity\Client;
 
+use App\Entity\Appointment\Appointment\Appointment;
 use App\Entity\Trainer\Trainer;
 use App\Entity\User\User;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
@@ -52,6 +55,13 @@ class Client
     #[Serializer(['trainer'])]
     private ?float $totalBodyWater = null;
 
+    #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'client')]
+    private Collection $appointments;
+
+    public function __construct()
+    {
+        $this->appointments = new ArrayCollection();
+    }
 
     # ===============================
     # ===== Getters & Setters
@@ -154,6 +164,36 @@ class Client
     public function setTotalBodyWater(?float $totalBodyWater): static
     {
         $this->totalBodyWater = $totalBodyWater;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): static
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): static
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getClient() === $this) {
+                $appointment->setClient(null);
+            }
+        }
 
         return $this;
     }
