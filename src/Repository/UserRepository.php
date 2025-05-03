@@ -21,7 +21,7 @@ class UserRepository extends EntityRepository
 
             UserTypeEnum::ADMIN => $this->createBaseQbVisibleToAdmin(),
 
-            UserTypeEnum::PERSONAL_TRAINER => $this->createBaseQbVisibleToTrainer(),
+            UserTypeEnum::TRAINER => $this->createBaseQbVisibleToTrainer(),
 
             UserTypeEnum::CLIENT => $this->createBaseQbVisibleToClient(),
         };

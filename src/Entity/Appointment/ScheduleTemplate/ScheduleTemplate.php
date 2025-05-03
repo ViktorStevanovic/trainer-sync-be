@@ -3,14 +3,16 @@
 namespace App\Entity\Appointment\ScheduleTemplate;
 
 use App\Entity\Trainer\Trainer;
+use App\Repository\Appointment\ScheduleTemplate\ScheduleTemplateRepository;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use JMS\Serializer\Annotation\Groups as Serializer;
+use JMS\Serializer\Annotation\Type;
 
-#[Entity()]
+#[Entity(repositoryClass: ScheduleTemplateRepository::class)]
 #[Table(name: 'schedule_templates')]
 class ScheduleTemplate
 {
@@ -21,7 +23,6 @@ class ScheduleTemplate
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Trainer::class, inversedBy: 'scheduleTemplates')]
-    #[Serializer(['scheduleTemplate'])]
     private ?Trainer $trainer = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false)]
@@ -30,10 +31,12 @@ class ScheduleTemplate
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: false)]
     #[Serializer(['scheduleTemplate'])]
+    #[Type("DateTime<'H:i'>")]
     private ?DateTime $startTime = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: false)]
     #[Serializer(['scheduleTemplate'])]
+    #[Type("DateTime<'H:i'>")]
     private ?DateTime $endTime = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false)]

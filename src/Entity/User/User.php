@@ -4,6 +4,7 @@ namespace App\Entity\User;
 
 use App\Entity\Trainer\Trainer;
 use App\Entity\UserType\UserType;
+use App\Enum\UserType\UserTypeEnum;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
@@ -87,6 +88,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Serializer\Groups(['simpleUser', 'user'])]
     private ?DateTime $createdAt = null;
+
+
+    # ===============================
+    # ===== Other methods
+    # ===============================
+
+    public function isAdmin(): ?bool
+    {
+        return $this->getUserType()->getCode() === UserTypeEnum::ADMIN;
+    }
+
+    public function isTrainer(): ?bool
+    {
+        return $this->getUserType()->getCode() === UserTypeEnum::TRAINER;
+    }
+
+    public function isClient(): ?bool
+    {
+        return $this->getUserType()->getCode() === UserTypeEnum::CLIENT;
+    }
 
     # ===============================
     # ===== Getters & Setters
