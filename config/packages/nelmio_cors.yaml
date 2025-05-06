@@ -1,0 +1,13 @@
+nelmio_cors:
+    defaults:
+        allow_origin: ["%env(BASE_FE_URL)%"]
+        allow_credentials: true
+        allow_headers: ['Content-Type', 'Authorization']
+        allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        max_age: 3600
+    paths:
+        '^/': # this applies to all paths — adjust as needed
+            allow_origin: ["%env(BASE_FE_URL)%"]
+            allow_headers: ['Content-Type', 'Authorization']
+            allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+            max_age: 3600
