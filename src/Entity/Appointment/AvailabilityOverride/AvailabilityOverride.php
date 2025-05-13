@@ -36,75 +36,142 @@ class AvailabilityOverride
     #[Serializer(['availabilityOverride'])]
     private ?DateTime $endTime = null;
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Serializer(['availabilityOverride'])]
+    private ?bool $fullDayOverride = false;
+
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     #[Serializer(['availabilityOverride'])]
-    private ?bool $isAvailable = true;
+    private ?bool $active = true;
 
     # ===============================
     # ===== Getters & Setters
     # ===============================
 
+
+
+    /**
+     * Get the value of id
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * Set the value of id
+     */
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of trainer
+     */
+    public function getTrainer(): ?Trainer
+    {
+        return $this->trainer;
+    }
+
+    /**
+     * Set the value of trainer
+     */
+    public function setTrainer(?Trainer $trainer): self
+    {
+        $this->trainer = $trainer;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of date
+     */
     public function getDate(): ?DateTime
     {
         return $this->date;
     }
 
-    public function setDate(DateTime $date): static
+    /**
+     * Set the value of date
+     */
+    public function setDate(?DateTime $date): self
     {
         $this->date = $date;
 
         return $this;
     }
 
+    /**
+     * Get the value of startTime
+     */
     public function getStartTime(): ?DateTime
     {
         return $this->startTime;
     }
 
-    public function setStartTime(DateTime $startTime): static
+    /**
+     * Set the value of startTime
+     */
+    public function setStartTime(?DateTime $startTime): self
     {
         $this->startTime = $startTime;
 
         return $this;
     }
 
+    /**
+     * Get the value of endTime
+     */
     public function getEndTime(): ?DateTime
     {
         return $this->endTime;
     }
 
-    public function setEndTime(DateTime $endTime): static
+    /**
+     * Set the value of endTime
+     */
+    public function setEndTime(?DateTime $endTime): self
     {
         $this->endTime = $endTime;
 
         return $this;
     }
 
-    public function isAvailable(): ?bool
+    /**
+     * Get the value of fullDayOverride
+     */
+    public function isFullDayOverride(): ?bool
     {
-        return $this->isAvailable;
+        return $this->fullDayOverride;
     }
 
-    public function setIsAvailable(bool $isAvailable): static
+    /**
+     * Set the value of fullDayOverride
+     */
+    public function setFullDayOverride(?bool $fullDayOverride): self
     {
-        $this->isAvailable = $isAvailable;
+        $this->fullDayOverride = $fullDayOverride;
 
         return $this;
     }
 
-    public function getTrainer(): ?Trainer
+    /**
+     * Get the value of active
+     */
+    public function isActive(): ?bool
     {
-        return $this->trainer;
+        return $this->active;
     }
 
-    public function setTrainer(?Trainer $trainer): static
+    /**
+     * Set the value of active
+     */
+    public function setActive(?bool $active): self
     {
-        $this->trainer = $trainer;
+        $this->active = $active;
 
         return $this;
     }
