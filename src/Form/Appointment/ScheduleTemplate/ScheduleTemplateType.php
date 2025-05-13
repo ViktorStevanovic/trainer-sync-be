@@ -52,17 +52,40 @@ class ScheduleTemplateType extends AbstractType
                     return;
                 }
 
-                $existingTemplate = $this->doctrineHelper->getRepository(ScheduleTemplate::class)->findOneBy([
+                $startTime = $scheduleTemplate->getStartTime();
+                $endTime = $scheduleTemplate->getEndTime();
+
+                if ($startTime >= $endTime) {
+                    $form->addError(new FormError('Start time must be before end time.'));
+                    return;
+                }
+
+                /** @var ScheduleTemplate[] $existingTemplates */
+                $existingTemplates = $this->doctrineHelper->getRepository(ScheduleTemplate::class)->findBy([
                     'trainer' => $trainer,
                     'weekDay' => $scheduleTemplate->getWeekDay(),
                 ]);
 
-                // se esiste già un template con lo stesso giorno della settiman do errore
-                if ($existingTemplate && $existingTemplate->getId() !== $scheduleTemplate->getId()) {
-                    $form->addError(new FormError(
-                        'There is already a schedule template for this trainer on this weekday.'
-                    ));
-                    return;
+                foreach ($existingTemplates as $existingTemplate) {
+                    // skip self when editing
+                    if ($scheduleTemplate->getId() && $existingTemplate->getId() === $scheduleTemplate->getId()) {
+                        continue;
+                    }
+
+                    $existingStart = $existingTemplate->getStartTime();
+                    $existingEnd = $existingTemplate->getEndTime();
+
+                    // Check if time intervals overlap
+                    if (
+                        ($startTime < $existingEnd) && ($endTime > $existingStart)
+                    ) {
+                        $form->addError(new FormError(sprintf(
+                            'Schedule conflict: overlaps with another schedule from %s to %s.',
+                            $existingStart->format('H:i'),
+                            $existingEnd->format('H:i')
+                        )));
+                        return;
+                    }
                 }
             });
     }
