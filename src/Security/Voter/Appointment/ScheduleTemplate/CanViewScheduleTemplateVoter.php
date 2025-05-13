@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter\Appointment\ScheduleTemplate;
 
+use App\Entity\Appointment\ScheduleTemplate\ScheduleTemplate;
 use App\Entity\Trainer\Trainer;
 use App\Entity\User\User;
 use App\Enum\User\RoleEnum;
@@ -11,7 +12,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class CanViewScheduleTemplateVoter extends Voter
 {
-    public const CAN_VIEW_TRAINER_SCHEDULE_TEMPLATES = 'CAN_CAN_VIEW_TRAINER_SCHEDULE_TEMPLATES';
+    public const CAN_VIEW_SCHEDULE_TEMPLATE = 'CAN_VIEW_SCHEDULE_TEMPLATE';
 
     public function __construct(
         private readonly LoggedUserService $loggedUserService
@@ -19,7 +20,7 @@ class CanViewScheduleTemplateVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        return $attribute === self::CAN_VIEW_TRAINER_SCHEDULE_TEMPLATES && $subject instanceof Trainer;
+        return $attribute === self::CAN_VIEW_SCHEDULE_TEMPLATE;
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
@@ -31,13 +32,9 @@ class CanViewScheduleTemplateVoter extends Voter
             return false;
         }
 
-        /** @var Trainer $trainer */
-        $trainer = $subject;
+        /** @var ScheduleTemplate $scheduleTemplate */
+        $scheduleTemplate = $subject;
 
-        if ($loggedUser->isAdmin()) {
-            return true;
-        }
-
-        return $loggedUser === $trainer->getUser();
+        return $scheduleTemplate->getTrainer() === $loggedUser;
     }
 }

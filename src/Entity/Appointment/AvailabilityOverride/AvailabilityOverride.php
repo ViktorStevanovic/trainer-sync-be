@@ -48,8 +48,6 @@ class AvailabilityOverride
     # ===== Getters & Setters
     # ===============================
 
-
-
     /**
      * Get the value of id
      */

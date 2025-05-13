@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Client\Client;
 use App\Entity\Trainer\Trainer;
 use App\Entity\UserType\UserType;
 use App\Enum\UserType\UserTypeEnum;
@@ -88,6 +89,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Serializer\Groups(['simpleUser', 'user'])]
     private ?DateTime $createdAt = null;
+
+    #[ORM\OneToOne(targetEntity: Trainer::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Serializer\Groups(['user'])]
+    private ?Trainer $trainer = null;
+
+    #[ORM\OneToOne(targetEntity: Client::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Serializer\Groups(['user'])]
+    private ?Client $client = null;
 
 
     # ===============================
@@ -366,6 +377,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhone(?string $phone): self
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of trainer
+     */
+    public function getTrainer(): ?Trainer
+    {
+        return $this->trainer;
+    }
+
+    /**
+     * Set the value of trainer
+     */
+    public function setTrainer(?Trainer $trainer): self
+    {
+        $this->trainer = $trainer;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of client
+     */
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    /**
+     * Set the value of client
+     */
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }

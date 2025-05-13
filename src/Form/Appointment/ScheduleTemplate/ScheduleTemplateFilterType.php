@@ -25,6 +25,7 @@ class ScheduleTemplateFilterType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class' => ScheduleTemplateFilter::class,
+                'allow_extra_fields' => false
             ]);
     }
 }

@@ -3,17 +3,13 @@
 namespace App\Controller\Appointment\ScheduleTemplate;
 
 use App\Controller\Controller;
-use App\Entity\Trainer\Trainer;
-use App\Error\ErrorCodeEnum;
 use App\Form\Appointment\ScheduleTemplate\ScheduleTemplateFilterType;
 use App\Model\Form\Appointment\ScheduleTemplate\ScheduleTemplateFilter;
-use App\Security\Voter\Appointment\ScheduleTemplate\CanViewScheduleTemplateVoter;
 use App\Serializer\Appointment\ScheduleTemplate\ScheduleTemplateGroupsHelper;
 use App\Services\Appointment\ScheduleTemplate\ScheduleTemplateLister;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ListController extends Controller
 {
@@ -21,16 +17,10 @@ class ListController extends Controller
         private readonly ScheduleTemplateLister $scheduleTemplateLister
     ) {}
 
-    #[Route(path: '/trainer/{trainer}/schedule-template', requirements: ['trainer' => '\d+'], methods: ['GET'])]
-    #[IsGranted(
-        attribute: CanViewScheduleTemplateVoter::CAN_VIEW_TRAINER_SCHEDULE_TEMPLATES,
-        subject: 'trainer',
-        message: ErrorCodeEnum::ERROR_ENTITY_001
-    )]
-    public function listTrainersScheduleTemplates(Request $request, Trainer $trainer): JsonResponse
+    #[Route(path: '/schedule-template', requirements: ['trainer' => '\d+'], methods: ['GET'])]
+    public function listTrainersScheduleTemplates(Request $request): JsonResponse
     {
-        $filter = new ScheduleTemplateFilter()
-            ->setTrainer($trainer);
+        $filter = new ScheduleTemplateFilter();
         $form = $this->createForm(ScheduleTemplateFilterType::class, $filter);
 
         $form->submit($request->query->all());

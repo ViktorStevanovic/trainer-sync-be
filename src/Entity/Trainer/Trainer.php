@@ -11,7 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
-use JMS\Serializer\Annotation\Groups as Serializer;
+use JMS\Serializer\Annotation as Serializer;
 
 #[Entity()]
 #[Table(name: 'trainers')]
@@ -20,19 +20,19 @@ class Trainer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Serializer(['trainer'])]
+    #[Serializer\Groups(['trainer'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class)]
-    #[Serializer(['trainer'])]
+    #[Serializer\Groups(['trainer'])]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    #[Serializer(['trainer'])]
+    #[Serializer\Groups(['trainer'])]
     private ?float $hourlyRate = null;
 
     #[ORM\OneToMany(targetEntity: Client::class, mappedBy: 'trainer')]
-    #[Serializer(['client'])]
+    #[Serializer\Groups(['client'])]
     private Collection $clients;
 
     #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'trainer')]
