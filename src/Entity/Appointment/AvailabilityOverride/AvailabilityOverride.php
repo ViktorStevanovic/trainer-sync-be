@@ -28,11 +28,11 @@ class AvailabilityOverride
     #[Serializer(['availabilityOverride'])]
     private ?DateTime $date = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: false)]
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     #[Serializer(['availabilityOverride'])]
     private ?DateTime $startTime = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: false)]
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     #[Serializer(['availabilityOverride'])]
     private ?DateTime $endTime = null;
 
