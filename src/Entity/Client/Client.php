@@ -11,7 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
-use JMS\Serializer\Annotation\Groups as Serializer;
+use JMS\Serializer\Annotation as Serializer;
 
 #[Entity()]
 #[Table(name: 'clients')]
@@ -20,40 +20,44 @@ class Client
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Serializer(['client'])]
+    #[Serializer\Groups(['client'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class)]
-    #[Serializer(['client'])]
+    #[Serializer\Groups(['client'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: Trainer::class, inversedBy: 'clients')]
-    #[Serializer(['client'])]
-    private ?Trainer $trainer = null;
+    #[Serializer\Groups(['client'])]
+    private ?Trainer $client = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Serializer(['trainer'])]
+    #[Serializer\Groups(['client'])]
     private ?int $age = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Serializer(['trainer'])]
+    #[Serializer\Groups(['client'])]
     private ?int $height = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    #[Serializer(['trainer'])]
+    #[Serializer\Groups(['client'])]
     private ?float $weight = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    #[Serializer(['trainer'])]
+    #[Serializer\Groups(['client'])]
     private ?float $fatMass = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    #[Serializer(['trainer'])]
+    #[Serializer\Groups(['client'])]
     private ?float $freeFatMass = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    #[Serializer(['trainer'])]
+    #[Serializer\Groups(['client'])]
     private ?float $totalBodyWater = null;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ["default" => true])]
+    #[Serializer\Groups(['client'])]
+    private ?bool $active = true;
 
     #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'client')]
     private Collection $appointments;
@@ -86,12 +90,12 @@ class Client
 
     public function getTrainer(): ?Trainer
     {
-        return $this->trainer;
+        return $this->client;
     }
 
-    public function setTrainer(?Trainer $trainer): static
+    public function setTrainer(?Trainer $client): static
     {
-        $this->trainer = $trainer;
+        $this->client = $client;
 
         return $this;
     }
@@ -194,6 +198,24 @@ class Client
                 $appointment->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of active
+     */
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * Set the value of active
+     */
+    public function setActive(?bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }

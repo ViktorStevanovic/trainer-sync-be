@@ -13,6 +13,12 @@ use JMS\Serializer\Annotation\Groups as Serializer;
 
 #[Entity()]
 #[Table(name: 'availability_slots')]
+#[ORM\Index(name: 'idx_active', fields: ['active'])]
+#[ORM\Index(name: 'idx_booked', fields: ['booked'])]
+#[ORM\Index(name: 'idx_date', fields: ['date'])]
+#[ORM\Index(name: 'idx_start_time', fields: ['startTime'])]
+#[ORM\Index(name: 'idx_end_time', fields: ['endTime'])]
+#[ORM\Index(name: 'idx_date_start_end_time', fields: ['date', 'startTime', 'endTime'])]
 class AvailabilitySlot
 {
     #[ORM\Id]
@@ -26,20 +32,24 @@ class AvailabilitySlot
     private ?Trainer $trainer = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: false)]
-    #[Serializer(['scheduleTemplate'])]
+    #[Serializer(['availabilitySlot'])]
     private ?DateTime $date = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: false)]
-    #[Serializer(['scheduleTemplate'])]
+    #[Serializer(['availabilitySlot'])]
     private ?DateTime $startTime = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: false)]
-    #[Serializer(['scheduleTemplate'])]
+    #[Serializer(['availabilitySlot'])]
     private ?DateTime $endTime = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
-    #[Serializer(['scheduleTemplate'])]
+    #[Serializer(['availabilitySlot'])]
     private ?bool $active = true;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Serializer(['availabilitySlot'])]
+    private ?bool $booked = false;
 
     #[ORM\OneToOne(targetEntity: Appointment::class, mappedBy: 'availabilitySlot')]
     private ?Appointment $appointment = null;
@@ -131,6 +141,24 @@ class AvailabilitySlot
         }
 
         $this->appointment = $appointment;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of booked
+     */
+    public function isBooked(): ?bool
+    {
+        return $this->booked;
+    }
+
+    /**
+     * Set the value of booked
+     */
+    public function setBooked(?bool $booked): self
+    {
+        $this->booked = $booked;
 
         return $this;
     }

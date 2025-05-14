@@ -12,18 +12,18 @@ use App\Services\Utils\Helper\LoggedUserService;
 
 readonly class ScheduleTemplateLister
 {
-
     public function __construct(
         private DoctrineHelper $doctrineHelper,
         private LoggedUserService $loggedUserService
     ) {}
 
     /**
-     * @param ScheduleTemplateFilter $filter
+     * @param ScheduleTemplateFilter|null $filter
+     * @param User|null $user
      * 
      * @return ScheduleTemplate[]
      */
-    public function getTrainersScheduleTemplates(ScheduleTemplateFilter $filter, ?User $user = null): array
+    public function getTrainersScheduleTemplates(?ScheduleTemplateFilter $filter = null, ?User $user = null): array
     {
         /** @var User $user */
         $user = is_null($user) ? $this->loggedUserService->getLoggedUser() : $user;
@@ -33,11 +33,13 @@ readonly class ScheduleTemplateLister
 
         $qb = $repo->createBaseVisibleQb(trainer: $user->getTrainer());
 
-        $weekDays = $filter->getWeekDays();
-        if (!empty($weekDays)) {
-            $qb
-                ->andWhere('st.weekDay in (:weekDays)')
-                ->setParameter('weekDays', $weekDays);
+        if (!is_null($filter)) {
+
+            $weekDays = $filter->getWeekDays();
+            if (!empty($weekDays)) {
+                $qb->andWhere('st.weekDay in (:weekDays)')
+                    ->setParameter('weekDays', $weekDays);
+            }
         }
 
         return $qb->getQuery()->getResult();

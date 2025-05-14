@@ -5,6 +5,7 @@ namespace App\Entity\Trainer;
 use App\Entity\Appointment\Appointment\Appointment;
 use App\Entity\Client\Client;
 use App\Entity\User\User;
+use App\Repository\Trainer\TrainerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use JMS\Serializer\Annotation as Serializer;
 
-#[Entity()]
+#[Entity(repositoryClass: TrainerRepository::class)]
 #[Table(name: 'trainers')]
 class Trainer
 {
@@ -30,6 +31,10 @@ class Trainer
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     #[Serializer\Groups(['trainer'])]
     private ?float $hourlyRate = null;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ["default" => true])]
+    #[Serializer\Groups(['trainer'])]
+    private ?bool $active = true;
 
     #[ORM\OneToMany(targetEntity: Client::class, mappedBy: 'trainer')]
     #[Serializer\Groups(['client'])]
@@ -137,6 +142,24 @@ class Trainer
                 $appointment->setTrainer(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of active
+     */
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * Set the value of active
+     */
+    public function setActive(?bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }

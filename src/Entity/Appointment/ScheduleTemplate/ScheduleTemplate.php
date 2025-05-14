@@ -14,6 +14,7 @@ use JMS\Serializer\Annotation\Type;
 
 #[Entity(repositoryClass: ScheduleTemplateRepository::class)]
 #[Table(name: 'schedule_templates')]
+#[ORM\Index(name: 'idx_week_day', fields: ['weekDay'])]
 class ScheduleTemplate
 {
     #[ORM\Id]

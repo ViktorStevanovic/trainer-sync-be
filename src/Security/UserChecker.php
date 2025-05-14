@@ -40,7 +40,6 @@ class UserChecker implements UserCheckerInterface
      */
     public function checkPreAuth(UserInterface $user): void
     {
-        dump('x');
         if (!$user instanceof User) {
             return;
         }

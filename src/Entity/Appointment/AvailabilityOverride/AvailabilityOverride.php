@@ -3,6 +3,7 @@
 namespace App\Entity\Appointment\AvailabilityOverride;
 
 use App\Entity\Trainer\Trainer;
+use App\Repository\Appointment\AvailabilityOverride\AvailabilityOverrideRepository;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,8 +11,14 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use JMS\Serializer\Annotation\Groups as Serializer;
 
-#[Entity()]
+#[Entity(repositoryClass: AvailabilityOverrideRepository::class)]
 #[Table(name: 'availability_overrides')]
+#[ORM\Index(name: 'idx_active', fields: ['active'])]
+#[ORM\Index(name: 'idx_full_day_override', fields: ['fullDayOverride'])]
+#[ORM\Index(name: 'idx_date', fields: ['date'])]
+#[ORM\Index(name: 'idx_start_time', fields: ['startTime'])]
+#[ORM\Index(name: 'idx_end_time', fields: ['endTime'])]
+#[ORM\Index(name: 'idx_date_start_end_time', fields: ['date', 'startTime', 'endTime'])]
 class AvailabilityOverride
 {
     #[ORM\Id]
