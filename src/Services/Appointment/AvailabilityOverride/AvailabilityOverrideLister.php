@@ -3,13 +3,9 @@
 namespace App\Services\Appointment\AvailabilityOverride;
 
 use App\Entity\Appointment\AvailabilityOverride\AvailabilityOverride;
-use App\Entity\Appointment\ScheduleTemplate\ScheduleTemplate;
-use App\Entity\Trainer\Trainer;
 use App\Entity\User\User;
 use App\Model\Form\Appointment\AvailabilityOverride\AvailabilityOverrideFilter;
-use App\Model\Form\Appointment\ScheduleTemplate\ScheduleTemplateFilter;
 use App\Repository\Appointment\AvailabilityOverride\AvailabilityOverrideRepository;
-use App\Repository\Appointment\ScheduleTemplate\ScheduleTemplateRepository;
 use App\Services\Utils\Helper\DoctrineHelper;
 use App\Services\Utils\Helper\LoggedUserService;
 

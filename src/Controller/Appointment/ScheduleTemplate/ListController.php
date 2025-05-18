@@ -17,7 +17,7 @@ class ListController extends Controller
         private readonly ScheduleTemplateLister $scheduleTemplateLister
     ) {}
 
-    #[Route(path: '/schedule-template', requirements: ['trainer' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/schedule-template', methods: ['GET'])]
     public function listTrainersScheduleTemplates(Request $request): JsonResponse
     {
         $filter = new ScheduleTemplateFilter();

@@ -43,7 +43,7 @@ class AvailabilitySlotFactory
         }
     }
 
-    /**
+    /*
      * Elabora e genera gli slot per un singolo trainer per il periodo specificato.
      */
     private function processTrainerSlots(Trainer $trainer, DateTime $periodStart, DateTime $periodEnd): void
