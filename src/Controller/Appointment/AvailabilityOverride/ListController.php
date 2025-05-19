@@ -18,7 +18,7 @@ class ListController extends Controller
     ) {}
 
     #[Route(path: '/availability-override', methods: ['GET'])]
-    public function listTrainersScheduleTemplates(Request $request): JsonResponse
+    public function listTrainersAvailabilityOverrides(Request $request): JsonResponse
     {
         $filter = new AvailabilityOverrideFilter();
         $form = $this->createForm(AvailabilityOverrideFilterType::class, $filter);

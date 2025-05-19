@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
-use JMS\Serializer\Annotation\Groups as Serializer;
+use JMS\Serializer\Annotation as Serializer;
 
 #[Entity(repositoryClass: AvailabilityOverrideRepository::class)]
 #[Table(name: 'availability_overrides')]
@@ -24,31 +24,34 @@ class AvailabilityOverride
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Serializer(['availabilityOverride'])]
+    #[Serializer\Groups(['availabilityOverride'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Trainer::class, inversedBy: 'availabilityOverrides')]
-    #[Serializer(['availabilityOverride'])]
+    #[Serializer\Groups(['availabilityOverride'])]
     private ?Trainer $trainer = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: false)]
-    #[Serializer(['availabilityOverride'])]
+    #[Serializer\Groups(['availabilityOverride'])]
+    #[Serializer\Type("DateTime<'Y-m-d'>")]
     private ?DateTime $date = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    #[Serializer(['availabilityOverride'])]
+    #[Serializer\Groups(['availabilityOverride'])]
+    #[Serializer\Type("DateTime<'H:i:s'>")]
     private ?DateTime $startTime = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    #[Serializer(['availabilityOverride'])]
+    #[Serializer\Groups(['availabilityOverride'])]
+    #[Serializer\Type("DateTime<'H:i:s'>")]
     private ?DateTime $endTime = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Serializer(['availabilityOverride'])]
+    #[Serializer\Groups(['availabilityOverride'])]
     private ?bool $fullDayOverride = false;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
-    #[Serializer(['availabilityOverride'])]
+    #[Serializer\Groups(['availabilityOverride'])]
     private ?bool $active = true;
 
     # ===============================

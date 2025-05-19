@@ -3,9 +3,7 @@
 namespace App\Security\Voter\Appointment\ScheduleTemplate;
 
 use App\Entity\Appointment\ScheduleTemplate\ScheduleTemplate;
-use App\Entity\Trainer\Trainer;
 use App\Entity\User\User;
-use App\Enum\User\RoleEnum;
 use App\Services\Utils\Helper\LoggedUserService;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -39,6 +37,6 @@ class CanViewScheduleTemplateVoter extends Voter
         /** @var ScheduleTemplate $scheduleTemplate */
         $scheduleTemplate = $subject;
 
-        return $scheduleTemplate->getTrainer() === $loggedUser;
+        return $scheduleTemplate->getTrainer() === $loggedUser->getTrainer();
     }
 }

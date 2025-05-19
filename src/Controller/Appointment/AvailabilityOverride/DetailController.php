@@ -19,7 +19,7 @@ class DetailController extends Controller
         subject: 'availabilityOverride',
         message: ErrorCodeEnum::ERROR_ENTITY_001
     )]
-    public function detailScheduleTemplate(AvailabilityOverride $availabilityOverride): JsonResponse
+    public function detailAvailabilityOverride(AvailabilityOverride $availabilityOverride): JsonResponse
     {
         return $this->renderSerializedData($availabilityOverride, AvailabilityOverrideGroupsHelper::availabilityOverride());
     }

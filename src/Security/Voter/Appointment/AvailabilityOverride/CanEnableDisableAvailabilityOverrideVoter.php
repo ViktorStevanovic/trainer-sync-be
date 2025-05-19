@@ -8,9 +8,9 @@ use App\Services\Utils\Helper\LoggedUserService;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class CanViewAvailabilityOverrideVoter extends Voter
+class CanEnableDisableAvailabilityOverrideVoter extends Voter
 {
-    public const CAN_VIEW_AVAILABILITY_OVERRIDE = 'CAN_VIEW_AVAILABILITY_OVERRIDE';
+    public const CAN_ENABLE_DISABLE_AVAILABILITY_OVERRIDE = 'CAN_ENABLE_DISABLE_AVAILABILITY_OVERRIDE';
 
     public function __construct(
         private readonly LoggedUserService $loggedUserService
@@ -18,7 +18,7 @@ class CanViewAvailabilityOverrideVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        return $attribute === self::CAN_VIEW_AVAILABILITY_OVERRIDE;
+        return $attribute === self::CAN_ENABLE_DISABLE_AVAILABILITY_OVERRIDE;
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
@@ -30,13 +30,18 @@ class CanViewAvailabilityOverrideVoter extends Voter
             return false;
         }
 
-        if ($loggedUser->isAdmin()) {
+        /** @var AvailabilityOverride $availabilityOverride */
+        $availabilityOverride = $subject['availabilityOverride'];
+
+        $enableDisable = $subject['enableDisable'];
+
+        if (
+            ($availabilityOverride->isActive() && $enableDisable === 'disable') ||
+            (!$availabilityOverride->isActive() && $enableDisable === 'enable')
+        ) {
             return true;
         }
 
-        /** @var AvailabilityOverride $availabilityOverride */
-        $availabilityOverride = $subject;
-
-        return $availabilityOverride->isActive() && $availabilityOverride->getTrainer() === $loggedUser->getTrainer();
+        return false;
     }
 }

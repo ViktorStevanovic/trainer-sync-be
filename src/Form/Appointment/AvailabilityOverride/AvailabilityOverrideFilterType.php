@@ -16,7 +16,7 @@ class AvailabilityOverrideFilterType extends AbstractType
     {
         $builder
             ->add('date', DateType::class, [
-                'widget' => 'single-text',
+                'widget' => 'single_text',
                 'format' => 'yyyy-M-d',
                 'html5' => false
             ])

@@ -4,10 +4,13 @@ namespace App\Controller\Appointment\AvailabilityOverride;
 
 use App\Controller\Controller;
 use App\Entity\Appointment\AvailabilityOverride\AvailabilityOverride;
+use App\Error\ErrorCodeEnum;
 use App\Form\Appointment\AvailabilityOverride\AvailabilityOverrideType;
+use App\Security\Voter\Appointment\AvailabilityOverride\CanViewAvailabilityOverrideVoter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CreateEditController extends Controller
 {
@@ -19,11 +22,11 @@ class CreateEditController extends Controller
     }
 
     #[Route(path: '/availability-override/{availabilityOverride}', requirements: ['availabilityOverride' => '\d+'], methods: ['PUT'])]
-    // #[IsGranted(
-    //     attribute: CanViewAvailabilityOverrideVoter::CAN_VIEW_SCHEDULE_TEMPLATE,
-    //     subject: 'availabilityOverride',
-    //     message: ErrorCodeEnum::ERROR_ENTITY_001
-    // )]
+    #[IsGranted(
+        attribute: CanViewAvailabilityOverrideVoter::CAN_VIEW_AVAILABILITY_OVERRIDE,
+        subject: 'availabilityOverride',
+        message: ErrorCodeEnum::ERROR_ENTITY_001
+    )]
     public function editAvailabilityOverride(Request $request, AvailabilityOverride $availabilityOverride): JsonResponse
     {
         return $this->manageAvailabilityOverride($request, $availabilityOverride);
