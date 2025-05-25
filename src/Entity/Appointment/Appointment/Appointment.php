@@ -5,6 +5,7 @@ namespace App\Entity\Appointment\Appointment;
 use App\Entity\Appointment\AvailabilitySlot\AvailabilitySlot;
 use App\Entity\Client\Client;
 use App\Entity\Trainer\Trainer;
+use App\Enum\Appointment\Appointment\AppointmentStatusEnum;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
@@ -33,9 +34,9 @@ class Appointment
     #[Serializer(['appointment'])]
     private ?AvailabilitySlot $availabilitySlot = null;
 
-    #[ORM\Column(type: Types::STRING, nullable: false)]
+    #[ORM\Column(type: Types::STRING, nullable: false, options: ['default' => AppointmentStatusEnum::SCHEDULED])]
     #[Serializer(['appointment'])]
-    private ?string $status = null;
+    private ?string $status = AppointmentStatusEnum::SCHEDULED;
 
     # ===============================
     # ===== Getters & Setters
@@ -93,6 +94,4 @@ class Appointment
 
         return $this;
     }
-
-
 }
