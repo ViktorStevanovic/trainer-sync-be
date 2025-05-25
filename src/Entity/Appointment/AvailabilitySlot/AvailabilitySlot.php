@@ -4,7 +4,11 @@ namespace App\Entity\Appointment\AvailabilitySlot;
 
 use App\Entity\Appointment\Appointment\Appointment;
 use App\Entity\Trainer\Trainer;
+use App\Enum\Appointment\Appointment\AppointmentStatusEnum;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
@@ -51,8 +55,32 @@ class AvailabilitySlot
     #[Serializer(['availabilitySlot'])]
     private ?bool $booked = false;
 
-    #[ORM\OneToOne(targetEntity: Appointment::class, mappedBy: 'availabilitySlot')]
-    private ?Appointment $appointment = null;
+    #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'availabilitySlot')]
+    private Collection $appointments;
+
+    # ===============================
+    # ===== Costruttore
+    # ===============================
+
+    public function __construct()
+    {
+        $this->appointments = new ArrayCollection();
+    }
+
+    # ===============================
+    # ===== Altri metodi
+    # ===============================
+
+    public function getScheduledAppointment(): ?Appointment
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('status', AppointmentStatusEnum::SCHEDULED))
+            ->setMaxResults(1);
+
+        $matchingAppointments = $this->appointments->matching($criteria);
+
+        return $matchingAppointments->isEmpty() ? null : $matchingAppointments->first();
+    }
 
     # ===============================
     # ===== Getters & Setters
@@ -63,36 +91,36 @@ class AvailabilitySlot
         return $this->id;
     }
 
-    public function getDate(): ?DateTime
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(DateTime $date): static
+    public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getStartTime(): ?DateTime
+    public function getStartTime(): ?\DateTimeInterface
     {
         return $this->startTime;
     }
 
-    public function setStartTime(DateTime $startTime): static
+    public function setStartTime(\DateTimeInterface $startTime): static
     {
         $this->startTime = $startTime;
 
         return $this;
     }
 
-    public function getEndTime(): ?DateTime
+    public function getEndTime(): ?\DateTimeInterface
     {
         return $this->endTime;
     }
 
-    public function setEndTime(DateTime $endTime): static
+    public function setEndTime(\DateTimeInterface $endTime): static
     {
         $this->endTime = $endTime;
 
@@ -111,6 +139,18 @@ class AvailabilitySlot
         return $this;
     }
 
+    public function isBooked(): ?bool
+    {
+        return $this->booked;
+    }
+
+    public function setBooked(bool $booked): static
+    {
+        $this->booked = $booked;
+
+        return $this;
+    }
+
     public function getTrainer(): ?Trainer
     {
         return $this->trainer;
@@ -123,42 +163,32 @@ class AvailabilitySlot
         return $this;
     }
 
-    public function getAppointment(): ?Appointment
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
     {
-        return $this->appointment;
+        return $this->appointments;
     }
 
-    public function setAppointment(?Appointment $appointment): static
+    public function addAppointment(Appointment $appointment): static
     {
-        // unset the owning side of the relation if necessary
-        if ($appointment === null && $this->appointment !== null) {
-            $this->appointment->setAvailabilitySlot(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($appointment !== null && $appointment->getAvailabilitySlot() !== $this) {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
             $appointment->setAvailabilitySlot($this);
         }
-
-        $this->appointment = $appointment;
 
         return $this;
     }
 
-    /**
-     * Get the value of booked
-     */
-    public function isBooked(): ?bool
+    public function removeAppointment(Appointment $appointment): static
     {
-        return $this->booked;
-    }
-
-    /**
-     * Set the value of booked
-     */
-    public function setBooked(?bool $booked): self
-    {
-        $this->booked = $booked;
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getAvailabilitySlot() === $this) {
+                $appointment->setAvailabilitySlot(null);
+            }
+        }
 
         return $this;
     }

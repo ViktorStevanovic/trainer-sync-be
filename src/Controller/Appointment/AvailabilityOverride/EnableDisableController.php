@@ -6,6 +6,7 @@ use App\Controller\Controller;
 use App\Entity\Appointment\AvailabilityOverride\AvailabilityOverride;
 use App\Error\ErrorCodeEnum;
 use App\Security\Voter\Appointment\AvailabilityOverride\CanEnableDisableAvailabilityOverrideVoter;
+use App\Services\Appointment\AvailabilityOverride\AvailabilityOverrideManager;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,6 +15,10 @@ use Throwable;
 
 class EnableDisableController extends Controller
 {
+    public function __construct(
+        private readonly AvailabilityOverrideManager $availabilityOverrideManager
+    ) {}
+
     #[Route(
         path: '/availability-override/{availabilityOverride}/{enableDisable}',
         requirements: ['availabilityOverride' => '\d+', 'enableDisable' => 'enable|disable'],
@@ -32,14 +37,13 @@ class EnableDisableController extends Controller
             $wasActive = $availabilityOverride->isActive();
 
             if ($wasActive && $enableDisable === 'disable') {
-                $availabilityOverride->setActive(false);
+                $this->availabilityOverrideManager->deactivateAvailabilityOverride($availabilityOverride);
             }
 
             if (!$wasActive && $enableDisable === 'enable') {
-                $availabilityOverride->setActive(true);
+                $this->availabilityOverrideManager->activateAvailabilityOverride($availabilityOverride);
             }
 
-            $this->save();
             $this->commit();
         } catch (Throwable $e) {
             $this->rollback();

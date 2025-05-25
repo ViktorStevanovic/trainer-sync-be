@@ -7,6 +7,7 @@ use App\Entity\Appointment\AvailabilityOverride\AvailabilityOverride;
 use App\Error\ErrorCodeEnum;
 use App\Form\Appointment\AvailabilityOverride\AvailabilityOverrideType;
 use App\Security\Voter\Appointment\AvailabilityOverride\CanViewAvailabilityOverrideVoter;
+use App\Services\Appointment\AvailabilityOverride\AvailabilityOverrideManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,11 +15,35 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CreateEditController extends Controller
 {
+    public function __construct(
+        private readonly AvailabilityOverrideManager $availabilityOverrideManager
+    ) {}
+
     #[Route(path: '/availability-override', methods: ['POST'])]
     public function createAvailabilityOverride(Request $request): JsonResponse
     {
-        $availabilityOverride = new AvailabilityOverride()->setTrainer($this->getUser()->getTrainer());
-        return $this->manageAvailabilityOverride($request, $availabilityOverride);
+        $this->beginTransaction();
+        try {
+            $availabilityOverride = new AvailabilityOverride();
+            $availabilityOverride->setTrainer($this->getUser()->getTrainer());
+
+            $form = $this->createForm(AvailabilityOverrideType::class, $availabilityOverride);
+            $form->submit($request->request->all());
+
+            if (!$form->isValid()) {
+                return $this->renderSerializedFormErrors($form);
+            }
+
+
+            $this->save($availabilityOverride);
+            $this->availabilityOverrideManager->createAvailabilityOverride($availabilityOverride);
+            $this->commit();
+
+            return $this->renderEmptyResponse();
+        } catch (\Throwable $th) {
+            $this->rollback();
+            throw $th;
+        }
     }
 
     #[Route(path: '/availability-override/{availabilityOverride}', requirements: ['availabilityOverride' => '\d+'], methods: ['PUT'])]
@@ -29,20 +54,11 @@ class CreateEditController extends Controller
     )]
     public function editAvailabilityOverride(Request $request, AvailabilityOverride $availabilityOverride): JsonResponse
     {
-        return $this->manageAvailabilityOverride($request, $availabilityOverride);
-    }
-
-    /**
-     * @param Request $request
-     * @param AvailabilityOverride $availabilityOverride
-     * 
-     * @return JsonResponse
-     */
-    private function manageAvailabilityOverride(Request $request, AvailabilityOverride $availabilityOverride): JsonResponse
-    {
         $this->beginTransaction();
-
         try {
+            // Cloniamo l'override prima di modificarlo, per passare la versione vecchia al manager
+            $oldOverride = clone $availabilityOverride;
+
             $form = $this->createForm(AvailabilityOverrideType::class, $availabilityOverride);
             $form->submit($request->request->all());
 
@@ -50,7 +66,9 @@ class CreateEditController extends Controller
                 return $this->renderSerializedFormErrors($form);
             }
 
+
             $this->save($availabilityOverride);
+            $this->availabilityOverrideManager->editAvailabilityOverride($oldOverride, $availabilityOverride);
             $this->commit();
 
             return $this->renderEmptyResponse();

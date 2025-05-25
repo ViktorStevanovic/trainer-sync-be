@@ -19,7 +19,7 @@ class Appointment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Serializer(['appointments'])]
+    #[Serializer(['appointment'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Trainer::class, inversedBy: 'appointment')]
@@ -30,7 +30,7 @@ class Appointment
     #[Serializer(['appointment'])]
     private ?Client $client = null;
 
-    #[ORM\OneToOne(targetEntity: AvailabilitySlot::class, inversedBy: 'appointment')]
+    #[ORM\ManyToOne(targetEntity: AvailabilitySlot::class, inversedBy: 'appointments')]
     #[Serializer(['appointment'])]
     private ?AvailabilitySlot $availabilitySlot = null;
 

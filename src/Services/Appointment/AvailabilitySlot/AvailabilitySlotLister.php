@@ -2,6 +2,7 @@
 
 namespace App\Services\Appointment\AvailabilitySlot;
 
+use App\Entity\Appointment\AvailabilityOverride\AvailabilityOverride;
 use App\Entity\Appointment\AvailabilitySlot\AvailabilitySlot;
 use App\Entity\User\User;
 use App\Model\Form\Appointment\AvailabilitySlot\AvailabilitySlotFilter;
@@ -66,5 +67,27 @@ readonly class AvailabilitySlotLister
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param AvailabilityOverride $availabilityOverride
+     * 
+     * @return AvailabilitySlot[]
+     */
+    public function getSlotsFromAvailabilityOverride(AvailabilityOverride $availabilityOverride): array
+    {
+        /** @var AvailabilitySlotRepository $repo */
+        $repo = $this->doctrineHelper->getRepository(AvailabilitySlot::class);
+
+        return $repo->createBaseVisibleQb(trainer: $availabilityOverride->getTrainer())
+            ->andWhere('as.date = :date')
+            ->setParameter('date', $availabilityOverride->getDate())
+            ->andWhere('as.startTime  >= :startTime')
+            ->andWhere('startTime', $availabilityOverride->getStartTime())
+            ->andWhere('as.endTime  <= :endTime')
+            ->andWhere('endTime', $availabilityOverride->getEndTime())
+            ->andWhere('as.active = true')
+            ->getQuery()
+            ->getResult();
     }
 }
