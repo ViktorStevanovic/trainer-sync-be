@@ -17,7 +17,7 @@ class AvailabilitySlotRepository extends EntityRepository
     public function createBaseVisibleQb(Trainer $trainer): QueryBuilder
     {
         return $this->createBaseQb()
-            ->andWhere('as.trainer = :trainer')
+            ->andWhere('avs.trainer = :trainer')
             ->setParameter('trainer', $trainer);
     }
 
@@ -26,7 +26,7 @@ class AvailabilitySlotRepository extends EntityRepository
      * 
      * @return QueryBuilder
      */
-    private function createBaseQb(?string $alias = 'as'): QueryBuilder
+    private function createBaseQb(?string $alias = 'avs'): QueryBuilder
     {
         return $this->createQueryBuilder($alias);
     }

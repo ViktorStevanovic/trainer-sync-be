@@ -37,31 +37,31 @@ readonly class AvailabilitySlotLister
 
             $date = $filter->getDate();
             if (!is_null($date)) {
-                $qb->andWhere('as.date = :date')
+                $qb->andWhere('avs.date = :date')
                     ->setParameter('date', $date);
             }
 
             $startTime = $filter->getStartTime();
             if (!is_null($startTime)) {
-                $qb->andWhere('as.startTime = :startTime')
+                $qb->andWhere('avs.startTime = :startTime')
                     ->setParameter('startTime', $startTime);
             }
 
             $endTime = $filter->getEndTime();
             if (!is_null($endTime)) {
-                $qb->andWhere('as.endTime = :endTime')
+                $qb->andWhere('avs.endTime = :endTime')
                     ->setParameter('endTime', $endTime);
             }
 
             $status = $filter->getStatus();
             if (!is_null($status)) {
-                $qb->andWhere('as.active = :active')
+                $qb->andWhere('avs.active = :active')
                     ->setParameter('active', $status);
             }
 
             $booked = $filter->isBooked();
             if (!is_null($booked)) {
-                $qb->andWhere('as.booked = :booked')
+                $qb->andWhere('avs.booked = :booked')
                     ->setParameter('booked', $booked);
             }
         }
@@ -80,13 +80,13 @@ readonly class AvailabilitySlotLister
         $repo = $this->doctrineHelper->getRepository(AvailabilitySlot::class);
 
         return $repo->createBaseVisibleQb(trainer: $availabilityOverride->getTrainer())
-            ->andWhere('as.date = :date')
+            ->andWhere('avs.date = :date')
             ->setParameter('date', $availabilityOverride->getDate())
-            ->andWhere('as.startTime  >= :startTime')
+            ->andWhere('avs.startTime  >= :startTime')
             ->andWhere('startTime', $availabilityOverride->getStartTime())
-            ->andWhere('as.endTime  <= :endTime')
+            ->andWhere('avs.endTime  <= :endTime')
             ->andWhere('endTime', $availabilityOverride->getEndTime())
-            ->andWhere('as.active = true')
+            ->andWhere('avs.active = true')
             ->getQuery()
             ->getResult();
     }

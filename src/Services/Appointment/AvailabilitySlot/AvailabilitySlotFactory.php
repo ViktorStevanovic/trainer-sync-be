@@ -124,7 +124,7 @@ class AvailabilitySlotFactory
 
         $existingSlot = $this->findExistingSlot($trainer, $dateForSlot, $slotStartTime, $slotEndTime);
 
-        if ($existingSlot === null) {
+        if (is_null($existingSlot)) {
             $newSlot = (new AvailabilitySlot())
                 ->setTrainer($trainer)
                 ->setDate(clone $dateForSlot) // Usa la data normalizzata per il campo 'date'
