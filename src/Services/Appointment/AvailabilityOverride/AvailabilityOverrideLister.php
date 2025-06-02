@@ -22,7 +22,7 @@ readonly class AvailabilityOverrideLister
      * 
      * @return AvailabilityOverride[]
      */
-    public function getTrainersAvailabilityOverrides(?AvailabilityOverrideFilter $filter = null, ?User $user = null): array
+    public function getVisibleAvailabilityOverrides(?AvailabilityOverrideFilter $filter = null, ?User $user = null): array
     {
         /** @var User $user */
         $user = is_null($user) ? $this->loggedUserService->getLoggedUser() : $user;
@@ -36,7 +36,7 @@ readonly class AvailabilityOverrideLister
 
             $trainer = $filter->getTrainer();
             if (!is_null($filter)) {
-                $qb->andWhere('avs.trainer = :trainer')
+                $qb->andWhere('ao.trainer = :trainer')
                     ->setParameter('trainer', $trainer);
             }
 

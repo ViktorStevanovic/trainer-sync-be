@@ -20,10 +20,11 @@ readonly class AvailabilitySlotLister
     /**
      * @param AvailabilitySlotFilter|null $filter
      * @param User|null $user
+     * @param bool $override
      * 
      * @return AvailabilitySlot[]
      */
-    public function getTrainersAvailabilitySlots(?AvailabilitySlotFilter $filter = null, ?User $user = null, ?bool $override = false): array
+    public function getVisibleAvailabilitySlots(?AvailabilitySlotFilter $filter = null, ?User $user = null, ?bool $override = false): array
     {
         /** @var User $user */
         $user = is_null($user) ? $this->loggedUserService->getLoggedUser() : $user;
@@ -103,7 +104,7 @@ readonly class AvailabilitySlotLister
             ->setTrainer($availabilityOverride->getTrainer())
             ->setStatus(true);
 
-        return $this->getTrainersAvailabilitySlots(filter: $slotFilter, override: true);
+        return $this->getVisibleAvailabilitySlots(filter: $slotFilter, override: true);
 
         // return $repo->createBaseVisibleQb(trainer: $availabilityOverride->getTrainer())
         //     ->andWhere('avs.date = :date')

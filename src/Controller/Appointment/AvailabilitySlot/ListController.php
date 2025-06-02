@@ -29,7 +29,7 @@ class ListController extends Controller
         if (!$form->isValid()) {
             return $this->renderSerializedFormErrors($form);
         }
-        $slots = $this->slotLister->getTrainersAvailabilitySlots(filter: $filter);
+        $slots = $this->slotLister->getVisibleAvailabilitySlots(filter: $filter);
         return $this->renderSerializedData($slots, AvailabilitySlotGroupsHelper::availabilitySlot());
     }
 
@@ -45,7 +45,7 @@ class ListController extends Controller
             return $this->renderSerializedFormErrors($form);
         }
 
-        $slots = $this->slotLister->getTrainersAvailabilitySlots(filter: $filter);
+        $slots = $this->slotLister->getVisibleAvailabilitySlots(filter: $filter);
         // Recupera solo gli appuntamenti prenotati
         $appointments = array_filter(
             array_map(

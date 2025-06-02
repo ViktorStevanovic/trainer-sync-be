@@ -30,7 +30,7 @@ class ListController extends Controller
             return $this->renderSerializedFormErrors($form);
         }
 
-        $availabilityOverrides = $this->overrideLister->getTrainersAvailabilityOverrides(filter: $filter);
+        $availabilityOverrides = $this->overrideLister->getVisibleAvailabilityOverrides(filter: $filter);
         return $this->renderSerializedData($availabilityOverrides, AvailabilityOverrideGroupsHelper::availabilityOverride());
     }
 }

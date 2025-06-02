@@ -69,7 +69,7 @@ class AvailabilitySlotFactory
      */
     private function getOverridesForDate(Trainer $trainer, DateTime $date): array
     {
-        return $this->overrideLister->getTrainersAvailabilityOverrides(
+        return $this->overrideLister->getVisibleAvailabilityOverrides(
             (new AvailabilityOverrideFilter())->setDate($date),
             $trainer->getUser()
         );

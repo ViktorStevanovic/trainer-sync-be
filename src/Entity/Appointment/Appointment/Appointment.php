@@ -6,13 +6,14 @@ use App\Entity\Appointment\AvailabilitySlot\AvailabilitySlot;
 use App\Entity\Client\Client;
 use App\Entity\Trainer\Trainer;
 use App\Enum\Appointment\Appointment\AppointmentStatusEnum;
+use App\Repository\Appointment\Appointment\AppointmentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use JMS\Serializer\Annotation\Groups as Serializer;
 
-#[Entity()]
+#[Entity(repositoryClass: AppointmentRepository::class)]
 #[Table(name: 'appointments')]
 class Appointment
 {
