@@ -5,14 +5,18 @@ namespace App\Entity\Appointment\Appointment;
 use App\Entity\Appointment\AvailabilitySlot\AvailabilitySlot;
 use App\Entity\Client\Client;
 use App\Entity\Trainer\Trainer;
+use App\Entity\User\User;
 use App\Enum\Appointment\Appointment\AppointmentStatusEnum;
 use App\Repository\Appointment\Appointment\AppointmentRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\Table;
+use Gedmo\Mapping\Annotation\Blameable;
+use Gedmo\Mapping\Annotation\Timestampable;
 use JMS\Serializer\Annotation as Serializer;
-use JMS\Serializer\Annotation\SerializedName;
 
 #[Entity(repositoryClass: AppointmentRepository::class)]
 #[Table(name: 'appointments')]
@@ -37,6 +41,15 @@ class Appointment
     #[ORM\Column(type: Types::STRING, nullable: false, options: ['default' => AppointmentStatusEnum::SCHEDULED])]
     #[Serializer\Groups(['appointment'])]
     private ?string $status = AppointmentStatusEnum::SCHEDULED;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[JoinColumn(nullable: true)]
+    #[Blameable(on: 'create')]
+    private ?User $createdBy = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Timestampable(on: 'create')]
+    private ?DateTime $createdAt = null;
 
     # ===============================
     # ===== Proprietà non mappate
@@ -64,6 +77,15 @@ class Appointment
     public function virtualSerializedClient(): ?Client
     {
         return $this->serializedClient;
+    }
+
+    # ===============================
+    # =====  Other methods
+    # ===============================
+
+    public function isScheduled(): bool
+    {
+        return $this->status  === AppointmentStatusEnum::SCHEDULED;
     }
 
     # ===============================
@@ -155,6 +177,42 @@ class Appointment
     public function setSerializedClient(?Client $serializedClient): self
     {
         $this->serializedClient = $serializedClient;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdBy
+     */
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set the value of createdBy
+     */
+    public function setCreatedBy(?User $createdBy): self
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt
+     */
+    public function getCreatedAt(): ?DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt
+     */
+    public function setCreatedAt(?DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

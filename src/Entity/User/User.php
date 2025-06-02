@@ -11,6 +11,8 @@ use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Gedmo\Mapping\Annotation\Blameable;
+use Gedmo\Mapping\Annotation\Timestampable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use JMS\Serializer\Annotation as Serializer;
@@ -83,11 +85,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[JoinColumn(nullable: true)]
-    #[Serializer\Groups(['simpleUser', 'user'])]
+    #[Blameable(on: 'create')]
     private ?User $createdBy = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Serializer\Groups(['simpleUser', 'user'])]
+    #[Timestampable(on: 'create')]
     private ?DateTime $createdAt = null;
 
     #[ORM\OneToOne(targetEntity: Trainer::class)]

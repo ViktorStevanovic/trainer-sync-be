@@ -92,36 +92,36 @@ class AvailabilitySlot
         return $this->id;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?\DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(\DateTime $date): static
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getStartTime(): ?\DateTimeInterface
+    public function getStartTime(): ?\DateTime
     {
         return $this->startTime;
     }
 
-    public function setStartTime(\DateTimeInterface $startTime): static
+    public function setStartTime(\DateTime $startTime): static
     {
         $this->startTime = $startTime;
 
         return $this;
     }
 
-    public function getEndTime(): ?\DateTimeInterface
+    public function getEndTime(): ?\DateTime
     {
         return $this->endTime;
     }
 
-    public function setEndTime(\DateTimeInterface $endTime): static
+    public function setEndTime(\DateTime $endTime): static
     {
         $this->endTime = $endTime;
 

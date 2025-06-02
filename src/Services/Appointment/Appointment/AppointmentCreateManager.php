@@ -2,21 +2,20 @@
 
 namespace App\Services\Appointment\Appointment;
 
-use App\Entity\Appointment\Appointment\Appointment;
-use App\Entity\User\User;
-use App\Entity\UserType\UserType;
-use App\Enum\UserType\UserTypeEnum;
-use App\Form\Appointment\Appointment\AppointmentType;
-use App\Form\Appointment\Appointment\ClientAppointmentType;
-use App\Form\Appointment\Appointment\TrainerAppointmentType;
-use App\Services\Utils\Helper\DoctrineHelper;
-use App\Services\Utils\Helper\LoggedUserService;
 use Exception;
-use Symfony\Component\Form\FormFactoryInterface;
+use App\Entity\User\User;
+use App\Enum\UserType\UserTypeEnum;
 use Symfony\Component\Form\FormInterface;
+use App\Services\Utils\Helper\DoctrineHelper;
 use Symfony\Component\HttpFoundation\Request;
+use App\Services\Utils\Helper\LoggedUserService;
+use Symfony\Component\Form\FormFactoryInterface;
+use App\Entity\Appointment\Appointment\Appointment;
+use App\Form\Appointment\Appointment\CreateAppointmentType;
+use App\Form\Appointment\Appointment\Association\TrainerAppointmentType;
+use App\Form\Appointment\Appointment\Association\Association\ClientAppointmentType;
 
-readonly class AppointmentManager
+readonly class AppointmentCreateManager
 {
     public function __construct(
         private DoctrineHelper $doctrineHelper,
@@ -30,7 +29,7 @@ readonly class AppointmentManager
      * 
      * @return void
      */
-    public function manageAppointment(Appointment $appointment, Request $request): void
+    public function manageAppointmentCreation(Appointment $appointment, Request $request): void
     {
         /** @var User $user */
         $user = $this->loggedUserService->getLoggedUser();
@@ -46,6 +45,8 @@ readonly class AppointmentManager
         if (!$form->isValid()) {
             throw new Exception($form->getErrors(true));
         }
+        // metto lo slot a prenotato
+        $appointment->getAvailabilitySlot()->setBooked(true);
 
         $this->doctrineHelper->save($appointment);
     }
@@ -82,6 +83,6 @@ readonly class AppointmentManager
      */
     private function adminAppointmentFactory(Appointment $appointment, User $user): FormInterface
     {
-        return $this->formFactory->create(AppointmentType::class, $appointment);
+        return $this->formFactory->create(CreateAppointmentType::class, $appointment);
     }
 }
