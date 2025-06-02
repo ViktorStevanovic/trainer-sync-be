@@ -24,13 +24,11 @@ class ListController extends Controller
     {
         $filter = new AvailabilitySlotFilter();
         $form = $this->createForm(AvailabilitySlotFilterType::class, $filter);
-        dump($filter);
-        dump($request->query->all());
+
         $form->submit($request->query->all());
         if (!$form->isValid()) {
             return $this->renderSerializedFormErrors($form);
         }
-        dump($filter);
         $slots = $this->slotLister->getTrainersAvailabilitySlots(filter: $filter);
         return $this->renderSerializedData($slots, AvailabilitySlotGroupsHelper::availabilitySlot());
     }
