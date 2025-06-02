@@ -23,7 +23,7 @@ readonly class AvailabilitySlotLister
      * 
      * @return AvailabilitySlot[]
      */
-    public function getTrainersAvailabilitySlots(?AvailabilitySlotFilter $filter = null, ?User $user = null): array
+    public function getTrainersAvailabilitySlots(?AvailabilitySlotFilter $filter = null, ?User $user = null, ?bool $override = false): array
     {
         /** @var User $user */
         $user = is_null($user) ? $this->loggedUserService->getLoggedUser() : $user;
@@ -31,9 +31,15 @@ readonly class AvailabilitySlotLister
         /** @var AvailabilitySlotRepository $repo */
         $repo = $this->doctrineHelper->getRepository(AvailabilitySlot::class);
 
-        $qb = $repo->createBaseVisibleQb(trainer: $user->getTrainer());
+        $qb = $repo->createQbVisibleToUser(user: $user);
 
         if (!is_null($filter)) {
+
+            $trainer = $filter->getTrainer();
+            if (!is_null($trainer)) {
+                $qb->andWhere('avs.trainer = :trainer')
+                    ->setParameter('trainer', $trainer);
+            }
 
             $date = $filter->getDate();
             if (!is_null($date)) {
@@ -41,20 +47,34 @@ readonly class AvailabilitySlotLister
                     ->setParameter('date', $date);
             }
 
+            // Orari
             $startTime = $filter->getStartTime();
-            if (!is_null($startTime)) {
-                $qb->andWhere('avs.startTime = :startTime')
-                    ->setParameter('startTime', $startTime);
-            }
-
             $endTime = $filter->getEndTime();
-            if (!is_null($endTime)) {
-                $qb->andWhere('avs.endTime = :endTime')
-                    ->setParameter('endTime', $endTime);
+            if ($override) {
+                if (!is_null($startTime)) {
+                    $qb->andWhere('avs.startTime >= :startTime')
+                        ->setParameter('startTime', $startTime);
+                }
+
+                if (!is_null($endTime)) {
+                    $qb->andWhere('avs.endTime <= :endTime')
+                        ->setParameter('endTime', $endTime);
+                }
+            } else {
+                if (!is_null($startTime)) {
+                    $qb->andWhere('avs.startTime = :startTime')
+                        ->setParameter('startTime', $startTime);
+                }
+
+                if (!is_null($endTime)) {
+                    $qb->andWhere('avs.endTime = :endTime')
+                        ->setParameter('endTime', $endTime);
+                }
             }
 
             $status = $filter->getStatus();
             if (!is_null($status)) {
+                dump($status);
                 $qb->andWhere('avs.active = :active')
                     ->setParameter('active', $status);
             }
@@ -76,18 +96,24 @@ readonly class AvailabilitySlotLister
      */
     public function getSlotsFromAvailabilityOverride(AvailabilityOverride $availabilityOverride): array
     {
-        /** @var AvailabilitySlotRepository $repo */
-        $repo = $this->doctrineHelper->getRepository(AvailabilitySlot::class);
+        $slotFilter = new AvailabilitySlotFilter()
+            ->setDate($availabilityOverride->getDate())
+            ->setStartTime($availabilityOverride->getStartTime())
+            ->setEndTime($availabilityOverride->getEndTime())
+            ->setTrainer($availabilityOverride->getTrainer())
+            ->setStatus(true);
 
-        return $repo->createBaseVisibleQb(trainer: $availabilityOverride->getTrainer())
-            ->andWhere('avs.date = :date')
-            ->setParameter('date', $availabilityOverride->getDate())
-            ->andWhere('avs.startTime  >= :startTime')
-            ->andWhere('startTime', $availabilityOverride->getStartTime())
-            ->andWhere('avs.endTime  <= :endTime')
-            ->andWhere('endTime', $availabilityOverride->getEndTime())
-            ->andWhere('avs.active = true')
-            ->getQuery()
-            ->getResult();
+        return $this->getTrainersAvailabilitySlots(filter: $slotFilter, override: true);
+
+        // return $repo->createBaseVisibleQb(trainer: $availabilityOverride->getTrainer())
+        //     ->andWhere('avs.date = :date')
+        //     ->setParameter('date', $availabilityOverride->getDate())
+        //     ->andWhere('avs.startTime  >= :startTime')
+        //     ->andWhere('startTime', $availabilityOverride->getStartTime())
+        //     ->andWhere('avs.endTime  <= :endTime')
+        //     ->andWhere('endTime', $availabilityOverride->getEndTime())
+        //     ->andWhere('avs.active = true')
+        //     ->getQuery()
+        //     ->getResult();
     }
 }

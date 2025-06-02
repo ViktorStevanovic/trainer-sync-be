@@ -29,7 +29,7 @@ class Client
 
     #[ORM\ManyToOne(targetEntity: Trainer::class, inversedBy: 'clients')]
     #[Serializer\Groups(['client'])]
-    private ?Trainer $client = null;
+    private ?Trainer $trainer = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Serializer\Groups(['client'])]
@@ -90,12 +90,12 @@ class Client
 
     public function getTrainer(): ?Trainer
     {
-        return $this->client;
+        return $this->trainer;
     }
 
-    public function setTrainer(?Trainer $client): static
+    public function setTrainer(?Trainer $trainer): static
     {
-        $this->client = $client;
+        $this->trainer = $trainer;
 
         return $this;
     }

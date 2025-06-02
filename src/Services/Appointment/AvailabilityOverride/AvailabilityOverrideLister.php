@@ -30,9 +30,15 @@ readonly class AvailabilityOverrideLister
         /** @var AvailabilityOverrideRepository $repo */
         $repo = $this->doctrineHelper->getRepository(AvailabilityOverride::class);
 
-        $qb = $repo->createBaseVisibleQb(trainer: $user->getTrainer());
+        $qb = $repo->createQbVisibleToUser(user: $user);
 
         if (!is_null($filter)) {
+
+            $trainer = $filter->getTrainer();
+            if (!is_null($filter)) {
+                $qb->andWhere('avs.trainer = :trainer')
+                    ->setParameter('trainer', $trainer);
+            }
 
             $date = $filter->getDate();
             if (!is_null($date)) {

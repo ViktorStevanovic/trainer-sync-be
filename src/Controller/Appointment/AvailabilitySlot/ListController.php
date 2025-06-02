@@ -7,7 +7,7 @@ use App\Entity\Appointment\AvailabilitySlot\AvailabilitySlot;
 use App\Form\Appointment\AvailabilitySlot\AvailabilitySlotFilterType;
 use App\Model\Form\Appointment\AvailabilitySlot\AvailabilitySlotFilter;
 use App\Serializer\Appointment\Appointment\AppointmentGroupsHelper;
-use App\Serializer\Appointment\AvailabilityOverride\AvailabilityOverrideGroupsHelper;
+use App\Serializer\Appointment\AvailabilitySlot\AvailabilitySlotGroupsHelper;
 use App\Services\Appointment\AvailabilitySlot\AvailabilitySlotLister;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,14 +24,15 @@ class ListController extends Controller
     {
         $filter = new AvailabilitySlotFilter();
         $form = $this->createForm(AvailabilitySlotFilterType::class, $filter);
-
+        dump($filter);
+        dump($request->query->all());
         $form->submit($request->query->all());
         if (!$form->isValid()) {
             return $this->renderSerializedFormErrors($form);
         }
-
+        dump($filter);
         $slots = $this->slotLister->getTrainersAvailabilitySlots(filter: $filter);
-        return $this->renderSerializedData($slots, AvailabilityOverrideGroupsHelper::availabilityOverride());
+        return $this->renderSerializedData($slots, AvailabilitySlotGroupsHelper::availabilitySlot());
     }
 
 

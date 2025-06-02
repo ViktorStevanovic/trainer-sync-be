@@ -2,8 +2,9 @@
 
 namespace App\Form\Appointment\AvailabilitySlot;
 
-use App\Model\Form\Appointment\AvailabilityOverride\AvailabilityOverrideFilter;
+use App\Entity\Trainer\Trainer;
 use App\Model\Form\Appointment\AvailabilitySlot\AvailabilitySlotFilter;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -16,6 +17,9 @@ class AvailabilitySlotFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('trainer', EntityType::class, [
+                'class' => Trainer::class
+            ])
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
                 'format' => 'yyyy-M-d',

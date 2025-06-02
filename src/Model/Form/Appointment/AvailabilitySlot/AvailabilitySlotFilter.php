@@ -2,10 +2,13 @@
 
 namespace App\Model\Form\Appointment\AvailabilitySlot;
 
+use App\Entity\Trainer\Trainer;
 use DateTime;
 
 class AvailabilitySlotFilter
 {
+    private ?Trainer $trainer = null;
+
     private ?DateTime $date = null;
 
     private ?DateTime $startTime = null;
@@ -102,6 +105,24 @@ class AvailabilitySlotFilter
     public function setBooked(?bool $booked): self
     {
         $this->booked = $booked;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of trainer
+     */
+    public function getTrainer(): ?Trainer
+    {
+        return $this->trainer;
+    }
+
+    /**
+     * Set the value of trainer
+     */
+    public function setTrainer(?Trainer $trainer): self
+    {
+        $this->trainer = $trainer;
 
         return $this;
     }

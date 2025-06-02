@@ -5,6 +5,7 @@ namespace App\Entity\Appointment\AvailabilitySlot;
 use App\Entity\Appointment\Appointment\Appointment;
 use App\Entity\Trainer\Trainer;
 use App\Enum\Appointment\Appointment\AppointmentStatusEnum;
+use App\Repository\Appointment\AvailabilitySlot\AvailabilitySlotRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,9 +14,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
-use JMS\Serializer\Annotation\Groups as Serializer;
+use JMS\Serializer\Annotation as Serializer;
 
-#[Entity()]
+#[Entity(repositoryClass: AvailabilitySlotRepository::class)]
 #[Table(name: 'availability_slots')]
 #[ORM\Index(name: 'idx_active', fields: ['active'])]
 #[ORM\Index(name: 'idx_booked', fields: ['booked'])]
@@ -28,31 +29,31 @@ class AvailabilitySlot
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Serializer(['availabilitySlot'])]
+    #[Serializer\Groups(['availabilitySlot'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Trainer::class, inversedBy: 'availabilitySlots')]
-    #[Serializer(['availabilitySlot'])]
     private ?Trainer $trainer = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: false)]
-    #[Serializer(['availabilitySlot'])]
+    #[Serializer\Groups(['availabilitySlot'])]
+    #[Serializer\Type("DateTime<'Y-m-d'>")]
     private ?DateTime $date = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: false)]
-    #[Serializer(['availabilitySlot'])]
+    #[Serializer\Groups(['availabilitySlot'])]
+    #[Serializer\Type("DateTime<'H:i:s'>")]
     private ?DateTime $startTime = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: false)]
-    #[Serializer(['availabilitySlot'])]
+    #[Serializer\Groups(['availabilitySlot'])]
+    #[Serializer\Type("DateTime<'H:i:s'>")]
     private ?DateTime $endTime = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
-    #[Serializer(['availabilitySlot'])]
     private ?bool $active = true;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    #[Serializer(['availabilitySlot'])]
     private ?bool $booked = false;
 
     #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'availabilitySlot')]
