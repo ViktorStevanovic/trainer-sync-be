@@ -36,13 +36,13 @@ readonly class AppointmentLister
         if (!is_null($filter)) {
 
             $trainer = $filter->getTrainer();
-            if (!is_null($filter)) {
+            if (!is_null($trainer)) {
                 $qb->andWhere('a.trainer = :trainer')
                     ->setParameter('trainer', $trainer);
             }
 
             $client = $filter->getClient();
-            if (!is_null($filter)) {
+            if (!is_null($client)) {
                 $qb->andWhere('a.client = :client')
                     ->setParameter('client', $client);
             }

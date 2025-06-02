@@ -10,6 +10,6 @@ class ClientAppointmentType extends AppointmentType
     {
         parent::buildForm($builder, $options);
         $builder
-            ->remove('trainer');
+            ->remove('client');
     }
 }

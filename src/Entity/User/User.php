@@ -49,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(targetEntity: UserType::class)]
     #[JoinColumn(nullable: false)]
-    #[Serializer\Groups(['minimalUser', 'simpleUser', 'user'])]
+    #[Serializer\Groups(['simpleUser', 'user'])]
     private ?UserType $userType = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
@@ -70,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?DateTime $passwordChangedAt = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ["default" => true])]
-    #[Serializer\Groups(['minimalUser', 'simpleUser', 'user'])]
+    #[Serializer\Groups(['simpleUser', 'user'])]
     private ?bool $active = true;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ["default" => false])]

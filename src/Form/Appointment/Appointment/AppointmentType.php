@@ -16,7 +16,7 @@ class AppointmentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('slot', EntityType::class, [
+            ->add('availabilitySlot', EntityType::class, [
                 'class' => AvailabilitySlot::class
             ])
             ->add('trainer', EntityType::class, [

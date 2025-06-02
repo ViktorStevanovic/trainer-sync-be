@@ -20,11 +20,11 @@ class Client
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Serializer\Groups(['client'])]
+    #[Serializer\Groups(['minimalClient', 'client'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class)]
-    #[Serializer\Groups(['client'])]
+    #[Serializer\Groups(['minimalClient', 'client'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: Trainer::class, inversedBy: 'clients')]

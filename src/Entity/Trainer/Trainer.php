@@ -21,11 +21,11 @@ class Trainer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Serializer\Groups(['trainer'])]
+    #[Serializer\Groups(['minimalTrainer', 'trainer'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class)]
-    #[Serializer\Groups(['trainer'])]
+    #[Serializer\Groups(['minimalTrainer', 'trainer'])]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
@@ -37,7 +37,7 @@ class Trainer
     private ?bool $active = true;
 
     #[ORM\OneToMany(targetEntity: Client::class, mappedBy: 'trainer')]
-    #[Serializer\Groups(['client'])]
+    #[Serializer\Groups(['trainer'])]
     private Collection $clients;
 
     #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'trainer')]

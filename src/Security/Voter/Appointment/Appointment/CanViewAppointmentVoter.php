@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Security\Voter\Appointment\AvailabilityOverride;
+namespace App\Security\Voter\Appointment\Appointment;
 
 use App\Entity\Appointment\Appointment\Appointment;
 use App\Entity\User\User;

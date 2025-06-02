@@ -47,7 +47,7 @@ readonly class AppointmentManager
             throw new Exception($form->getErrors(true));
         }
 
-        $this->doctrineHelper->save();
+        $this->doctrineHelper->save($appointment);
     }
 
     /**

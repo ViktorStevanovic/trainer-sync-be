@@ -5,7 +5,7 @@ namespace App\Controller\Appointment\Appointment;
 use App\Controller\Controller;
 use App\Entity\Appointment\Appointment\Appointment;
 use App\Error\ErrorCodeEnum;
-use App\Security\Voter\Appointment\AvailabilityOverride\CanViewAppointmentVoter;
+use App\Security\Voter\Appointment\Appointment\CanViewAppointmentVoter;
 use App\Serializer\Appointment\Appointment\AppointmentGroupsHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;

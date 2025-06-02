@@ -20,7 +20,7 @@ class ListController extends Controller
     ) {}
 
     #[Route(path: '/availability-slot', methods: ['GET'])]
-    public function listTrainersAvailabilitySlots(Request $request): JsonResponse
+    public function listAvailabilitySlots(Request $request): JsonResponse
     {
         $filter = new AvailabilitySlotFilter();
         $form = $this->createForm(AvailabilitySlotFilterType::class, $filter);
@@ -35,7 +35,7 @@ class ListController extends Controller
 
 
     #[Route(path: '/availability-slot/conflict', methods: ['GET'])]
-    public function listBookedAppointmentsConfilct(Request $request): JsonResponse
+    public function listBookedSlotsConfilct(Request $request): JsonResponse
     {
         $filter = new AvailabilitySlotFilter()->setBooked(true);
         $form = $this->createForm(AvailabilitySlotFilterType::class, $filter);
